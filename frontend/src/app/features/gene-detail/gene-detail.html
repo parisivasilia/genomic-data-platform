@@ -1,0 +1,333 @@
+<main class="page-shell">
+  <a class="back-link" routerLink="/">
+    ← Back to Gene Explorer
+  </a>
+
+  @if (loading()) {
+    <p class="state-message">
+      Loading gene details...
+    </p>
+  }
+
+  @if (error()) {
+    <p class="state-message error">
+      {{ error() }}
+    </p>
+  }
+
+  @if (gene(); as gene) {
+    <header class="hero">
+      <div>
+        <p class="eyebrow">
+          {{ gene.id }}
+        </p>
+
+        <h1>{{ gene.symbol }}</h1>
+
+        <p class="description">
+          {{ gene.description }}
+        </p>
+      </div>
+
+      <div class="assembly-badge">
+        {{ gene.referenceAssembly }}
+      </div>
+    </header>
+
+    <section class="overview-grid">
+      <article class="card">
+        <span>Gene type</span>
+        <strong>
+          {{ gene.geneType }}
+        </strong>
+      </article>
+
+      <article class="card">
+        <span>Chromosome</span>
+        <strong>
+          {{ gene.chromosome }}
+        </strong>
+      </article>
+
+      <article class="card">
+        <span>Coordinates</span>
+        <strong class="mono">
+          {{ gene.startPosition }}
+          –
+          {{ gene.endPosition }}
+        </strong>
+      </article>
+
+      <article class="card">
+        <span>Strand</span>
+        <strong>
+          {{ gene.strand }}
+        </strong>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">
+            IDENTIFIERS
+          </p>
+
+          <h2>Gene synonyms</h2>
+        </div>
+      </div>
+
+      <div class="chips">
+        @for (
+          synonym of gene.synonyms;
+          track synonym
+        ) {
+          <span>{{ synonym }}</span>
+        } @empty {
+          <p class="muted">
+            No synonyms available.
+          </p>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">
+            CURATED KNOWLEDGE
+          </p>
+
+          <h2>Curated annotations</h2>
+        </div>
+
+        <span>
+          {{ annotations().length }} records
+        </span>
+      </div>
+
+      <div class="annotation-list">
+        @for (
+          annotation of annotations();
+          track annotation.id
+        ) {
+          <article class="annotation-card">
+            @if (annotation.category) {
+              <span class="annotation-category">
+                {{ annotation.category }}
+              </span>
+            }
+
+            <h3>
+              {{ annotation.title }}
+            </h3>
+
+            <p class="annotation-text">
+              {{ annotation.annotationText }}
+            </p>
+
+            <p class="annotation-meta">
+              Curated by
+              {{ annotation.createdBy }}
+              · Updated
+              {{
+                annotation.updatedAt
+                  | date: 'mediumDate'
+              }}
+            </p>
+          </article>
+        } @empty {
+          <p class="empty annotation-empty">
+            No curated annotations available
+            for this gene.
+          </p>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">
+            TRANSCRIPTS
+          </p>
+
+          <h2>Ensembl transcripts</h2>
+        </div>
+
+        <span>
+          {{ transcripts().length }} records
+        </span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Coordinates</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              transcript of transcripts();
+              track transcript.id
+            ) {
+              <tr>
+                <td class="mono">
+                  {{ transcript.id }}
+                </td>
+
+                <td>
+                  {{ transcript.name }}
+                </td>
+
+                <td>
+                  {{
+                    transcript.transcriptType
+                  }}
+                </td>
+
+                <td class="mono">
+                  {{
+                    transcript.startPosition
+                  }}
+                  –
+                  {{
+                    transcript.endPosition
+                  }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td
+                  colspan="4"
+                  class="empty"
+                >
+                  No transcripts available.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">
+            CLINVAR
+          </p>
+
+          <h2>
+            Clinically interpreted variants
+          </h2>
+        </div>
+
+        <span>
+          {{ variants().length }} records
+        </span>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ClinVar ID</th>
+              <th>Accession</th>
+              <th>Position</th>
+              <th>Type</th>
+              <th>
+                Clinical significance
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              variant of variants();
+              track
+                variant.clinvarVariationId
+            ) {
+              <tr>
+                <td class="mono">
+                  {{
+                    variant.clinvarVariationId
+                  }}
+                </td>
+
+                <td class="mono">
+                  {{
+                    variant.clinvarAccession
+                  }}
+                </td>
+
+                <td class="mono">
+                  {{ variant.chromosome }}:
+                  {{ variant.position }}
+                </td>
+
+                <td>
+                  {{ variant.variantType }}
+                </td>
+
+                <td>
+                  <span
+                    [class]="
+                      'clinical-badge ' +
+                      clinicalSignificanceClass(
+                        variant.clinicalSignificance
+                      )
+                    "
+                  >
+                    {{
+                      variant.clinicalSignificance
+                    }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td
+                  colspan="5"
+                  class="empty"
+                >
+                  No ClinVar variants
+                  available.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel provenance">
+      <p class="eyebrow">
+        PROVENANCE
+      </p>
+
+      <h2>Data source</h2>
+
+      <p>
+        {{ gene.sourceName }}
+        release {{ gene.sourceVersion }}
+        · {{ gene.referenceAssembly }}
+      </p>
+
+      @if (gene.sourceUrl) {
+        <a
+          [href]="gene.sourceUrl"
+          target="_blank"
+          rel="noopener"
+        >
+          Source website ↗
+        </a>
+      }
+    </section>
+  }
+</main>

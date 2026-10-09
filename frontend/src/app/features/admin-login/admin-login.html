@@ -1,0 +1,64 @@
+<main class="login-shell">
+  <a
+    class="back-link"
+    routerLink="/"
+  >
+    ← Back to Gene Explorer
+  </a>
+
+  <section class="login-card">
+    <p class="eyebrow">
+      SECURE ADMINISTRATION
+    </p>
+
+    <h1>Admin Login</h1>
+
+    <p class="intro">
+      Authenticate to manage human-curated
+      genomic annotations. Imported Ensembl
+      and ClinVar records remain read-only.
+    </p>
+
+    <form (ngSubmit)="submit()">
+      <label for="username">
+        Username
+      </label>
+
+      <input
+        id="username"
+        name="username"
+        [(ngModel)]="username"
+        autocomplete="username"
+      />
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+      />
+
+      @if (error()) {
+        <p class="error">
+          {{ error() }}
+        </p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          Signing in...
+        } @else {
+          Sign in
+        }
+      </button>
+    </form>
+  </section>
+</main>

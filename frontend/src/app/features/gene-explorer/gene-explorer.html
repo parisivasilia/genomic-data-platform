@@ -1,0 +1,190 @@
+<main class="page-shell">
+  <nav class="page-nav">
+    <a routerLink="/admin">
+      Admin
+    </a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow">
+        GENOMIC DATA PLATFORM
+      </p>
+
+      <h1>Gene Explorer</h1>
+
+      <p class="subtitle">
+        Explore genes, transcripts, and clinically
+        interpreted genomic variants.
+
+        <span class="source-note">
+          Data integrated from Ensembl and NCBI ClinVar.
+        </span>
+      </p>
+    </div>
+  </header>
+
+  <section class="search-panel">
+    <div class="field">
+      <label for="symbol">
+        Gene symbol
+      </label>
+
+      <input
+        id="symbol"
+        [(ngModel)]="symbol"
+        placeholder="BRCA, TP53..."
+      />
+    </div>
+
+    <div class="field">
+      <label for="chromosome">
+        Chromosome
+      </label>
+
+      <input
+        id="chromosome"
+        [(ngModel)]="chromosome"
+        placeholder="13, 17..."
+      />
+    </div>
+
+    <div class="field">
+      <label for="geneType">
+        Gene type
+      </label>
+
+      <input
+        id="geneType"
+        [(ngModel)]="geneType"
+        placeholder="protein_coding"
+      />
+    </div>
+
+    <div class="field">
+      <label for="keyword">
+        Keyword / synonym
+      </label>
+
+      <input
+        id="keyword"
+        [(ngModel)]="keyword"
+        placeholder="description or synonym"
+      />
+    </div>
+
+    <div class="actions">
+      <button
+        class="primary"
+        type="button"
+        (click)="search()"
+      >
+        Search
+      </button>
+
+      <button
+        class="secondary"
+        type="button"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </div>
+  </section>
+
+  <section class="results">
+    <div class="results-header">
+      <div>
+        <p class="eyebrow">
+          RESULTS
+        </p>
+
+        <h2>Genes</h2>
+      </div>
+
+      <span>
+        {{ totalElements() }} records
+      </span>
+    </div>
+
+    @if (loading()) {
+      <p class="state-message">
+        Loading genomic data...
+      </p>
+    }
+
+    @if (error()) {
+      <p class="state-message error">
+        {{ error() }}
+      </p>
+    }
+
+    @if (!loading() && !error()) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Ensembl ID</th>
+              <th>Type</th>
+              <th>Chr</th>
+              <th>Coordinates</th>
+              <th>Strand</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              gene of genes();
+              track gene.id
+            ) {
+              <tr>
+                <td class="symbol">
+                  <a
+                    [routerLink]="[
+                      '/genes',
+                      gene.id
+                    ]"
+                  >
+                    {{ gene.symbol }}
+                  </a>
+                </td>
+
+                <td class="mono">
+                  {{ gene.id }}
+                </td>
+
+                <td>
+                  {{ gene.geneType }}
+                </td>
+
+                <td>
+                  {{ gene.chromosome }}
+                </td>
+
+                <td class="mono">
+                  {{ gene.startPosition }}
+                  –
+                  {{ gene.endPosition }}
+                </td>
+
+                <td>
+                  {{ gene.strand }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td
+                  colspan="6"
+                  class="empty"
+                >
+                  No genes match these filters.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>
