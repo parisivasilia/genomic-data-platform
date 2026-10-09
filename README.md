@@ -32,6 +32,31 @@ Public Genomic   Secure Admin
 
 The project emphasizes reproducibility, biological data provenance, genome assembly awareness, least-privilege access control, authentication and authorization, and separation between externally sourced genomic records and human-curated knowledge.
 
+## Application Preview
+
+### Gene Explorer
+
+Search and filter genomic records by gene symbol, chromosome, gene type, or keyword, with integrated Ensembl identifiers and genomic coordinates.
+
+![Gene Explorer](docs/images/gene-explorer.png)
+
+### Gene Detail & Curated Knowledge
+
+Detailed BRCA1 view combining genomic metadata, gene synonyms, human-curated annotations, and Ensembl transcript records.
+
+![Gene Detail and Curated Knowledge](docs/images/gene-detail.png)
+
+### ClinVar Variants & Data Provenance
+
+Clinically interpreted ClinVar variants are displayed together with clinical significance and source provenance for the GRCh38 dataset.
+
+![ClinVar Variants and Data Provenance](docs/images/clinvar-provenance.png)
+
+### Secure Curated Annotation Administration
+
+Authenticated administrators can load, create, edit, and delete human-curated annotations while imported Ensembl and ClinVar records remain source-controlled.
+
+![Secure Curated Annotation Administration](docs/images/admin-curation.png)
 ## Features
 
 - Gene ingestion from Ensembl
@@ -633,3 +658,4 @@ GitHub: `parisivasilia`
 
 LinkedIn:  
 https://www.linkedin.com/in/vasilia-parisi-416333226/
+
